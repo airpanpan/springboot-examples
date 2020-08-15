@@ -1,0 +1,77 @@
+package com.zzq.config;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.SecurityMetadataSource;
+import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
+import org.springframework.security.access.intercept.InterceptorStatusToken;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Enumeration;
+
+
+@Component
+public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
+
+
+    @Autowired
+    private FilterInvocationSecurityMetadataSource securityMetadataSource;
+
+    @Autowired
+    public void setMyAccessDecisionManager(MyAccessDecisionManager myAccessDecisionManager) {
+        super.setAccessDecisionManager(myAccessDecisionManager);
+    }
+
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        Enumeration<String> headerNames = request.getHeaderNames();
+        String path = request.getRequestURI();
+        if("/hello".equals(path) ) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+        FilterInvocation fi = new FilterInvocation(servletRequest, servletResponse, filterChain);
+        invoke(fi);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
+    public void invoke(FilterInvocation fi) throws IOException, ServletException {
+
+        InterceptorStatusToken token = super.beforeInvocation(fi);
+        try {
+            //执行下一个拦截器
+            fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
+        } finally {
+            super.afterInvocation(token, null);
+        }
+    }
+
+    @Override
+    public Class<?> getSecureObjectClass() {
+        return FilterInvocation.class;
+    }
+
+    @Override
+    public SecurityMetadataSource obtainSecurityMetadataSource() {
+
+        return this.securityMetadataSource;
+    }
+
+
+}
