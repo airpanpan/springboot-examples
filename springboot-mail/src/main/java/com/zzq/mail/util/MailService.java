@@ -1,7 +1,11 @@
 package com.zzq.mail.util;
 
+import org.apache.poi.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -10,6 +14,8 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -55,7 +61,7 @@ public class MailService {
      * @param subject 主题
      * @param content 内容
      */
-    public  void sendMimeMessge(String to, String subject, String content) {
+    public void sendMimeMessge(String to, String subject, String content) {
         MimeMessage message = mailSender.createMimeMessage();
         try {
             //true表示需要创建一个multipart message
@@ -69,6 +75,9 @@ public class MailService {
             e.printStackTrace();
         }
     }
+
+
+
 
     /**
      * 发送带附件的邮件
@@ -94,6 +103,27 @@ public class MailService {
 
             mailSender.send(message);
         } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public  void sendMimeMessge(String to, String subject, String content, InputStream is) {
+        MimeMessage message = mailSender.createMimeMessage();
+        try {
+            //true表示需要创建一个multipart message
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(SENDER);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+
+            InputStreamSource inputStreamResource = new InputStreamResource(is);
+           // FileSystemResource file = new FileSystemResource(is.);
+           // String fileName = file.getFilename();
+            byte[] bytes = IOUtils.toByteArray(is);
+            helper.addAttachment("xxx67.xlsx", new ByteArrayResource(bytes));
+            mailSender.send(message);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

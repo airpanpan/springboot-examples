@@ -6,7 +6,10 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.zzq.mail.entity.Report;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +20,12 @@ import java.util.List;
  * @see https://www.cnblogs.com/JWMA/p/12768166.html
  * @see https://www.yuque.com/easyexcel/doc/write#fd54d9a7 官方文档
  */
+@Component
 public class ExcelUtil {
 
 
+    @Autowired
+    private MailService mailService;
 
     /**
      * 异步无模型读（默认读取sheet0,从第2行开始读）
@@ -71,7 +77,42 @@ public class ExcelUtil {
     }
 
 
+    public static <T> InputStream writeFillTemplate2(String filePath, String templateFileName, T t) throws IOException {
+        ByteArrayOutputStream  outputStream = new ByteArrayOutputStream();
+        BufferedOutputStream  bos = new BufferedOutputStream(outputStream);
+        //FileOutputStream fos = new FileOutputStream(new File("E:/Demo.xlsx"));
+        //BufferedOutputStream  bos = new BufferedOutputStream(fos);
+        EasyExcel.write(bos).withTemplate(templateFileName).sheet().doFill(t);
 
+        InputStream is = null;
+        try {
+        /*    //2.选择流
+            is = new ByteArrayInputStream(outputStream.toByteArray());
+            //3.操作
+            byte[] flush = new byte[1024];//缓冲容器
+            int len = -1;//接收长度
+            while((len=is.read(flush)) != -1) {
+                String str = new String(flush,0,len);
+                System.out.print(str);
+                outputStream.write(flush, 0, len);
+            }*/
+
+
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        }  catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+           /* try {
+              *//*  if(is!=null) {
+                    //4.释放资源
+                    is.close();
+                }*//*
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+        }
+        return is;
+    }
 
 
     public static void main(String[] args) {

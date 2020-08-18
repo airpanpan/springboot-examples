@@ -9,7 +9,7 @@ spring:
     # 用户名
     username: zhiqiang.zeng@medbanks.cn
     # 授权码，就是我们刚才准备工作获取的代码
-    password: 572F6865792a9a23
+    password: 572F6865792a9a236765
     # 其它参数
     properties:
       mail:

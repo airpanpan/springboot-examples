@@ -11,8 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +22,11 @@ import java.util.Map;
 @WebAppConfiguration
 public class EasyExcelTest {
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private TemplateService templateService;
 
 
     /**
@@ -55,6 +59,20 @@ public class EasyExcelTest {
         report.setIdCard("44148111111");
         report.setName("su san ");
         ExcelUtil.writeFillTemplate("E:\\t1.xlsx", "E:\\xb.xlsx", report);
+    }
+
+
+    private static final String TO = "zhiqiang.zeng@medbanks.cn";
+    private static final String SUBJECT = "测试111b222邮件bbbsb";
+    private static final String CONTENT = "test content";
+
+    @Test
+    public void writeFillTemplate2() throws IOException {
+        Report report = new Report();
+        report.setIdCard("44148111111");
+        report.setName("su san ");
+        InputStream inputStream = ExcelUtil.writeFillTemplate2("E:\\t1.xlsx", "E:\\xb.xlsx", report);
+        mailService.sendMimeMessge(TO, SUBJECT, "test2222", inputStream);
     }
 
 
