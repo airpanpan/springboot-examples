@@ -3,6 +3,7 @@ package com.example.demo.groovy;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import org.codehaus.groovy.control.CompilerConfiguration;
 
 public class GroovyShellDemo {
 
@@ -34,7 +35,7 @@ public class GroovyShellDemo {
         System.out.println(run);*/
 
 
-        Binding bd3 = new Binding();
+       /* Binding bd3 = new Binding();
         bd3.setVariable("loginDays", 30);
         GroovyShell shell2 = new GroovyShell();
         Script parse = shell2.parse("def str =  (loginDays >= 20 ? '超过登陆天数' : '未超过登陆天数'); str; ");
@@ -43,7 +44,24 @@ public class GroovyShellDemo {
         System.out.println(parse.run());
 
         System.out.println(parse.getClass().getName());
-        System.out.println(parse2.getClass().getName());
+        System.out.println(parse2.getClass().getName());*/
+
+
+        Binding bd2 = new Binding();
+        bd2.setVariable("loginDays", 30);
+        bd2.setVariable("str", "---");
+        GroovyShell shell2 = new GroovyShell();
+        Script parse = shell2.parse("public String loginCheck(Integer loginDays, String str){\n" +
+                "    if (loginDays >= 20){\n" +
+                "        return  str + \"超过登录时间\";\n" +
+                "    }\n" +
+                "    return \"未超过登录时间\";\n" +
+                "}\n" +
+                "\n" +
+                "loginCheck(loginDays, str);");
+        parse.setBinding(bd2);
+        System.out.println(parse.run());
+
 
 
     }

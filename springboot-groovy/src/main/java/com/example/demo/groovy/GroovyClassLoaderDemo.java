@@ -1,7 +1,9 @@
 package com.example.demo.groovy;
 
+import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
+import groovy.lang.Script;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -40,18 +42,18 @@ public class GroovyClassLoaderDemo {
                 "\n" +
                 "public class LoginDemo {\n" +
                 "\n" +
-                "    public String loginCheck(Integer loginDays){\n" +
+                "    public String loginCheck(Integer loginDays, String str){\n" +
                 "        if (loginDays >= 500){\n" +
                 "            return \"超过登录时间\";\n" +
                 "        }\n" +
-                "        System.out.println(\"loginDemo = \" + loginDays);\n" +
+                "        System.out.println(\"loginDemo = \" + loginDays + str);\n" +
                 "        return \"未超过登录时间\";\n" +
                 "    }\n" +
                 "\n" +
                 "\n" +
                 "}", "loginTest");
-        GroovyObject groovyObject= (GroovyObject)loginTest.newInstance();
-        String result = (String) groovyObject.invokeMethod("loginCheck", 500);
+        GroovyObject groovyObject = (GroovyObject)loginTest.newInstance();
+        String result = (String) groovyObject.invokeMethod("loginCheck", new Object[]{30,"xxt"});
         System.out.println(result);
 
 
