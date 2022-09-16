@@ -1,5 +1,6 @@
 package com.example.demo.groovy;
 
+import com.example.demo.groovy.utils.GroovyShellUtil;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
@@ -47,7 +48,10 @@ public class GroovyShellDemo {
         System.out.println(parse2.getClass().getName());*/
 
 
-        Binding bd2 = new Binding();
+        /**
+         * 直接用script脚本方式运行
+         */
+/*        Binding bd2 = new Binding();
         bd2.setVariable("loginDays", 30);
         bd2.setVariable("str", "---");
         GroovyShell shell2 = new GroovyShell();
@@ -60,7 +64,28 @@ public class GroovyShellDemo {
                 "\n" +
                 "loginCheck(loginDays, str);");
         parse.setBinding(bd2);
-        System.out.println(parse.run());
+        System.out.println(parse.run());*/
+
+
+        while (true) {
+            new Thread() {
+                @Override
+                public void run() {
+                    Binding bd2 = new Binding();
+                    bd2.setVariable("loginDays", 30);
+                    String test1 = GroovyShellUtil.run("test1", "public String loginCheck(Integer loginDays){\n" +
+                            "    if (loginDays >= 20){\n" +
+                            "        return \"超过登录时间\";\n" +
+                            "    }\n" +
+                            "    return \"未超过登录时间\";\n" +
+                            "}\n" +
+                            "\n" +
+                            "loginCheck(loginDays);", bd2);
+                    System.out.println(test1);
+                }
+            }.run();
+        }
+
 
 
 
