@@ -3,6 +3,9 @@ package com.example.shiro.controller;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -32,6 +35,7 @@ public class MainController {
     }
 
     @RequestMapping("/index")
+    @RequiresRoles(value = {"user","admin"}, logical = Logical.OR)
     public String index() {
         return "index";
     }
@@ -61,11 +65,14 @@ public class MainController {
     }
 
     @GetMapping("/user/common")
+    @RequiresRoles(value = {"user","admin"}, logical = Logical.OR)
     public String common() {
         return "user/common";
     }
 
+
     @GetMapping("/user/admin")
+    @RequiresRoles(value = {"admin"})
     public String admin() {
         return "user/admin";
     }

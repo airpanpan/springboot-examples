@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<!--<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://shiro.apache.org/tags">-->
 <head>
 <head>
     <meta charset="UTF-8">
@@ -7,9 +8,15 @@
 </head>
 <body>
     <h2>page list</h2>
-    <a href="/user/common">common page</a>
+    <shiro:hasAllRoles name = "user">
+        <a href="/user/common">common page</a>
+        <shiro:hasPermission name = "user:add"><a href="">添加</a></shiro:hasPermission>
+        <shiro:hasPermission name = "user:delete"><a href="">删除</a></shiro:hasPermission>
+    </shiro:hasAllRoles>
     <br/>
-    <a href="/user/admin">admin page</a>
+    <shiro:hasAllRoles name = "admin">
+        <a href="/user/admin">admin page</a>
+    </shiro:hasAllRoles>
     <br/>
     <form th:action="@{/logout}" method="post">
         <input type="submit" class="btn btn-primary" value="注销"/>
