@@ -12,6 +12,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -64,6 +65,13 @@ public class UserRealm extends AuthorizingRealm {
         IUserService userService = (IUserService)ApplicationContextUtil.getBean(IUserService.class);
         User user = userService.loadUserByUsername(principal.toString());
 
-        return new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), this.getName());
+        /*
+           普通登录，不加密
+        return new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), this.getName());*/
+        /**
+         * 加密登录 采用md5
+         */
+        ByteSource slat = ByteSource.Util.bytes(user.getUsername());
+        return new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), slat, this.getName());
     }
 }
