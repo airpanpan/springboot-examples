@@ -9,10 +9,16 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.crazycake.shiro.IRedisManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.concurrent.TimeUnit;
 
 @Controller
 public class MainController {
@@ -26,6 +32,9 @@ public class MainController {
     public String index() {
         return "index";
     }*/
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @RequestMapping("/logout")
     public String logout() {
@@ -46,6 +55,8 @@ public class MainController {
         subject.login(new UsernamePasswordToken(username, password));
         return "redirect:index";
     }
+
+
 
     @RequestMapping("/toLogin")
     public String toLogin() {

@@ -21,6 +21,7 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private RoleMapper roleMapper;
 
+    @Resource
     private PermissionMapper permissionMapper;
 
     @Override

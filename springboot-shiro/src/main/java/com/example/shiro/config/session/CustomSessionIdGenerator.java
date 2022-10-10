@@ -1,4 +1,4 @@
-package com.example.shiro.config;
+package com.example.shiro.config.session;
 
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
