@@ -39,9 +39,9 @@ public class JWTUtil {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setHeaderParam("alg", "HS256")
+                .setClaims(claims)
                 .setSubject(user.getUsername())
                 .setId(UUID.randomUUID().toString())
-                .setClaims(claims)
                 .setIssuedAt(nowDate) //签发时间
                 .setExpiration(new Date(now + EXP)) //过期时间
                 .signWith(hs256, SECRET.getBytes(StandardCharsets.UTF_8))
