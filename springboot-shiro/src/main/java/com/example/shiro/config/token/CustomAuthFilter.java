@@ -2,6 +2,7 @@ package com.example.shiro.config.token;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.shiro.utils.JWTUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
@@ -85,6 +86,18 @@ public class CustomAuthFilter extends AuthenticatingFilter {
             map.put("msg", "token失效，请重新登录");
             httpServletResponse.getWriter().write(JSONObject.toJSONString(map));
             return false;
+        } else {
+            //token jwt校验失败
+            if (!JWTUtil.verify(token)){
+                httpServletResponse.setHeader("Access-Control-Allow-Credentials","true");
+                httpServletResponse.setHeader("Access-Control-Allow-Origin", httpServletRequest.getHeader("Origin"));
+                httpServletResponse.setCharacterEncoding("UTF-8");
+                Map<String, String> map = new HashMap<>();
+                map.put("code", "1001");
+                map.put("msg", "token校验失败");
+                httpServletResponse.getWriter().write(JSONObject.toJSONString(map));
+                return false;
+            }
         }
         return executeLogin(servletRequest, servletResponse);
     }

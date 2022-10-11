@@ -4,6 +4,8 @@ package com.example.shiro.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.shiro.entity.User;
 import com.example.shiro.service.IUserService;
+import com.example.shiro.utils.DigestsUtil;
+import com.example.shiro.utils.JWTUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.Logical;
@@ -56,7 +58,11 @@ public class MainTokenController {
         if (user == null){
             throw new IllegalArgumentException("账号/密码有误");
         }
-        String token = getToken();
+        String pwd = DigestsUtil.md5(password, user.getUsername()); //用户名作为盐值
+        if (!user.getPassword().equals(pwd)){
+            throw new IllegalArgumentException("密码错误");
+        }
+        String token = getToken(user);
         redisTemplate.opsForValue().set("token:"+token, JSONObject.toJSONString(user), 1800, TimeUnit.SECONDS);
         Map<String, String> result = new HashMap<>();
         result.put("token", token);
@@ -112,8 +118,10 @@ public class MainTokenController {
      *
      * @return
      */
-    private String getToken() {
-        return UUID.randomUUID().toString().replace("-", "");
+    private String getToken(User user) {
+        //return UUID.randomUUID().toString().replace("-", "");
+        //采用JWT加密
+        return JWTUtil.generateToken(user.getId(), user);
     }
 
 
