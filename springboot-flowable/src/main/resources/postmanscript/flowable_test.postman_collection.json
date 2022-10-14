@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "b0c06e5a-63fa-46a6-a85b-53659329dd66",
+		"name": "flowable_test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6724764"
+	},
+	"item": [
+		{
+			"name": "流程启动",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceId\":100,\r\n    \"requestUser\": \"hello\",\r\n    \"juniorAdmin\" : \"junior\",\r\n    \"seniorAdmin\" : \"senior\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/flowableTest/startProcess",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flowableTest",
+						"startProcess"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查看流程图",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/flowableTest/genProcessDiagram?processInstanceId=6d4875cf-4b9c-11ed-bd6f-dc215cb1c48e",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flowableTest",
+						"genProcessDiagram"
+					],
+					"query": [
+						{
+							"key": "processInstanceId",
+							"value": "6d4875cf-4b9c-11ed-bd6f-dc215cb1c48e"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查看任务接口",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/flowableTest/getTaskInstance/junior",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flowableTest",
+						"getTaskInstance",
+						"junior"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "处理任务",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"comment\" : \"pass\",\r\n     \"approved\" : true,\r\n     \"taskId\" : \"6d4b8318-4b9c-11ed-bd6f-dc215cb1c48e\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/flowableTest/handleTask",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flowableTest",
+						"handleTask"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查看流程处理结果",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/flowableTest/genProcessDiagram?processInstanceId=6d4875cf-4b9c-11ed-bd6f-dc215cb1c48e",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flowableTest",
+						"genProcessDiagram"
+					],
+					"query": [
+						{
+							"key": "processInstanceId",
+							"value": "6d4875cf-4b9c-11ed-bd6f-dc215cb1c48e"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
