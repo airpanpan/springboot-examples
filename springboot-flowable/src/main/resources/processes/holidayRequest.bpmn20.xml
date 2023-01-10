@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:flowable="http://flowable.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
+
+    <!-- process：流程定义根节点，id：流程唯一id， name：流程名称， isExecutable：流程是否可执行 -->
+    <process id="holidayRequest"  name="请求流程" isExecutable="true">
+
+        <!-- startEvent:流程启动事件 空启动事件 -->
+        <startEvent id="startEvent"/>
+
+        <!-- 顺序流：用从源元素指向目标元素的箭头表示，sourceRef:源元素， targetRef：目标元素  -->
+        <sequenceFlow sourceRef="startEvent" targetRef="approveTask" />
+
+        <!-- userTask:用户任务，当流程执行到用户任务时，会指派到该任务的用户或组的任务列表，并创建一个新的任务
+            id：必填，name为可选属性
+            1. 可以在userTask下扩展documentation元素节点，为用户任务添加描述
+            2. flowable:dueDate="${dateVariable}", 可以为这个任务设置到期日期，例如dateVariable PT30则表示从现在起30分钟后到期
+         -->
+        <userTask id="approveTask" name="Approve or reject request" >
+           <!-- <documentation> 任务描述 </documentation>-->
+
+            <!-- humanPerformer子元素用 resourceAssignmentExpression来实际定义用户-->
+           <!--
+            <humanPerformer>
+                <documentation></documentation>
+                <resourceAssignmentExpression>
+                    <formalExpression>kermit</formalExpression>
+                </resourceAssignmentExpression>
+            </humanPerformer>
+
+            也可以用flowable:assignee 这个自定义扩展来将用户指派至用户任务
+                 <userTask id="theTask" name="my task" flowable:assignee="kermit" />
+            或者为任务指定候选用户：
+                <userTask id="theTask" name="my task" flowable:candidateUsers="kermit, gonzo" />
+            -->
+
+            <!-- 任务也可以放在用户的候选任务列表中，采用potentialOwner（潜在用户）来定义，注意需要指定表达式中每一个元素为用户还是组 -->
+           <!--
+            <potentialOwner>
+                <resourceAssignmentExpression>
+                    <formalExpression>user(kermit), group(management)</formalExpression>
+                </resourceAssignmentExpression>
+            </potentialOwner>
+
+            也可以用自定义扩展用于为任务制定候选组
+            <userTask id="theTask" name="my task" flowable:candidateGroups="management, accountancy" />
+
+            -->
+        </userTask>
+        <!-- 顺序流的目标元素指向 排他网关 decision  -->
+        <sequenceFlow sourceRef="approveTask" targetRef="decision"/>
+
+        <!-- 排他网关 id：网关id , default: 默认顺序流，当排他网关都为false时选择默认顺序流作为出口 -->
+        <exclusiveGateway id="decision"/>
+        <!-- sequenceFlow:顺序流，包含conditionExpression为条件顺序流 -->
+        <sequenceFlow sourceRef="decision" targetRef="externalSystemCall" >
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[
+          ${approved}
+        ]]>
+            </conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow  sourceRef="decision" targetRef="sendRejectionMail">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[
+          ${!approved}
+        ]]>
+            </conditionExpression>
+        </sequenceFlow>
+
+        <!-- serviceTask:JAVA服务任务，用于调用java类
+        四种方法声明如何调用java逻辑：
+            指定实现了JavaDelegate或ActivityBehavior的类
+
+            调用解析为委托对象（delegation object）的表达式
+
+            调用方法表达式（method expression）
+
+            对值表达式（value expression）求值
+        -->
+        <serviceTask id="externalSystemCall" name="Enter holidays in external system"
+                     flowable:class="org.flowable.CallExternalSystemDelegate"/>
+        <sequenceFlow sourceRef="externalSystemCall" targetRef="holidayApprovedTask"/>
+
+        <userTask id="holidayApprovedTask" name="Holiday approved"/>
+        <sequenceFlow sourceRef="holidayApprovedTask" targetRef="approveEnd"/>
+
+        <serviceTask id="sendRejectionMail" name="Send out rejection email"
+                     flowable:class="org.flowable.SendRejectionMail"/>
+        <sequenceFlow sourceRef="sendRejectionMail" targetRef="rejectEnd"/>
+
+        <!-- 结束事件，空结束事件 -->
+        <endEvent id="approveEnd"/>
+        <!-- 结束事件，空结束事件 -->
+        <endEvent id="rejectEnd"/>
+
+    </process>
+
+</definitions>

@@ -10,6 +10,7 @@
         typeLanguage="http://www.w3.org/2001/XMLSchema"
         expressionLanguage="http://www.w3.org/1999/XPath"
         targetNamespace="http://www.activiti.org/test">
+
     <process id="processTest" name="Request Resource Approval " isExecutable="true">
         <startEvent id="starter" name="Starter"></startEvent>
         <serviceTask id="sendJuniorRejectEmail" name="发送初级审批拒绝邮件"
