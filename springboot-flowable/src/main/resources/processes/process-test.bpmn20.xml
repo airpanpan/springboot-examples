@@ -11,7 +11,7 @@
         expressionLanguage="http://www.w3.org/1999/XPath"
         targetNamespace="http://www.activiti.org/test">
 
-    <process id="processTest" name="Request Resource Approval " isExecutable="true">
+    <process id="processTest" name="test" isExecutable="true">
         <startEvent id="starter" name="Starter"></startEvent>
         <serviceTask id="sendJuniorRejectEmail" name="发送初级审批拒绝邮件"
                      activiti:class="com.example.flowable.delegate.SendJuniorRejectionMailDelegate">

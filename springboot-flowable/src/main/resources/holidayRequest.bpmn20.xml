@@ -24,7 +24,7 @@
             1. 可以在userTask下扩展documentation元素节点，为用户任务添加描述
             2. flowable:dueDate="${dateVariable}", 可以为这个任务设置到期日期，例如dateVariable PT30则表示从现在起30分钟后到期
          -->
-        <userTask id="approveTask" name="Approve or reject request" >
+        <userTask id="approveTask" name="同意或拒绝请假流程" flowable:assignee="zhangsan" >
            <!-- <documentation> 任务描述 </documentation>-->
 
             <!-- humanPerformer子元素用 resourceAssignmentExpression来实际定义用户-->
@@ -87,14 +87,14 @@
             对值表达式（value expression）求值
         -->
         <serviceTask id="externalSystemCall" name="Enter holidays in external system"
-                     flowable:class="org.flowable.CallExternalSystemDelegate"/>
+                     flowable:class="com.example.flowable.delegate.CallExternalSystemDelegate"/>
         <sequenceFlow sourceRef="externalSystemCall" targetRef="holidayApprovedTask"/>
 
         <userTask id="holidayApprovedTask" name="Holiday approved"/>
         <sequenceFlow sourceRef="holidayApprovedTask" targetRef="approveEnd"/>
 
         <serviceTask id="sendRejectionMail" name="Send out rejection email"
-                     flowable:class="org.flowable.SendRejectionMail"/>
+                     flowable:class="com.example.flowable.delegate.SendRejectionMail"/>
         <sequenceFlow sourceRef="sendRejectionMail" targetRef="rejectEnd"/>
 
         <!-- 结束事件，空结束事件 -->
