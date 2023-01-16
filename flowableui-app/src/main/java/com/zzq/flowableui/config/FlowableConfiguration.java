@@ -3,6 +3,10 @@ package com.zzq.flowableui.config;
 import org.flowable.engine.ProcessEngine;
 import org.flowable.engine.ProcessEngineConfiguration;
 import org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration;
+import org.flowable.idm.spring.SpringIdmEngineConfiguration;
+import org.flowable.ldap.LDAPConfiguration;
+import org.flowable.ldap.LDAPIdentityServiceImpl;
+import org.flowable.spring.boot.EngineConfigurationConfigurer;
 import org.flowable.ui.common.security.SecurityConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,5 +31,20 @@ public class FlowableConfiguration {
         //构建flowable流程引擎
         return configuration.buildProcessEngine();
     }
+
+
+    /**
+     * 参考 LDAPIdentityServiceImpl  的注册到 flowable 引擎配置类的实现方式
+     * 用于自定义用户、组
+     * @return
+     */
+/*
+    @Bean
+    public EngineConfigurationConfigurer<SpringIdmEngineConfiguration> myIdmEngineConfigurer() {
+        return idmEngineConfiguration -> idmEngineConfiguration
+                .setIdmIdentityService(new CustomIdmIdentityServiceImpl(idmEngineConfiguration));
+    }
+*/
+
 
 }

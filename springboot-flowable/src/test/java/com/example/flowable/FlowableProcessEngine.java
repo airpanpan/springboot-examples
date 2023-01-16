@@ -62,8 +62,8 @@ public class FlowableProcessEngine {
         RepositoryService repositoryService = processEngine.getRepositoryService();
         //创建一个新的部署
         Deployment deploy = repositoryService.createDeployment()
-                .addClasspathResource("holidayRequestTwo.bpmn20.xml")
-                .name("请求流程2")
+                .addClasspathResource("holidayRequestFour.bpmn20.xml")
+                .name("请求流程4")
                 .deploy();
         System.out.println("deploy.getId() = " + deploy.getId());
         System.out.println("deploy.getName() = " + deploy.getName());
@@ -77,7 +77,7 @@ public class FlowableProcessEngine {
         RepositoryService repositoryService = processEngine.getRepositoryService();
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
 
-        ProcessDefinition processDefinition = processDefinitionQuery.deploymentId("25001").singleResult();
+        ProcessDefinition processDefinition = processDefinitionQuery.deploymentId("47501").singleResult();
         System.out.println("processDefinition.getDeploymentId() = " + processDefinition.getDeploymentId());
         System.out.println("processDefinition.getName() = " + processDefinition.getName());
         System.out.println("processDefinition.getKey() = " + processDefinition.getKey());

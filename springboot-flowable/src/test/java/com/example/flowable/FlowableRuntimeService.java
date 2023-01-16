@@ -1,10 +1,7 @@
 package com.example.flowable;
 
 import com.google.common.collect.Maps;
-import org.flowable.engine.ProcessEngine;
-import org.flowable.engine.ProcessEngineConfiguration;
-import org.flowable.engine.RuntimeService;
-import org.flowable.engine.TaskService;
+import org.flowable.engine.*;
 import org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
@@ -47,11 +44,34 @@ public class FlowableRuntimeService {
         //获取runtimeservice
         RuntimeService runtimeService = processEngine.getRuntimeService();
         Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("employee", "zhangsan");
-        variables.put("nrOfHolidays", "5day");
-        variables.put("description", "张三请求5天");
+        variables.put("employee", "lisi");
+        variables.put("nrOfHolidays", "10day");
+        variables.put("description", "李四请求10天");
         //
-        ProcessInstance instance = runtimeService.startProcessInstanceByKey("holidayRequestTwo", variables);
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey("holidayRequestThree", variables);
+        System.out.println("instance.getProcessDefinitionId() = " + instance.getProcessDefinitionId());
+        System.out.println("instance.getProcessDefinitionKey() = " + instance.getProcessDefinitionKey());
+        System.out.println("instance.getId() = " + instance.getId());
+        System.out.println("instance.getActivityId() = " + instance.getActivityId());
+    }
+
+    /**
+     * 启动流程设置用户id，绑定到流程发起人
+     * 如果将此流程部署到独立的flowable引擎将无法正确分配发起人用户到用户任务（原因是此变量需要IDM模块支持）
+     *  直接使用固定值设置 ${INITIATOR} 即可解决
+     */
+    @Test
+    public void testRuntimeProcessByInitiator(){
+        //获取runtimeservice
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("employee", "lisi");
+        variables.put("nrOfHolidays", "10day");
+        variables.put("description", "李四请求10天");
+
+        IdentityService identityService = processEngine.getIdentityService();
+        identityService.setAuthenticatedUserId("lisi");
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey("holidayRequestFour", variables);
         System.out.println("instance.getProcessDefinitionId() = " + instance.getProcessDefinitionId());
         System.out.println("instance.getProcessDefinitionKey() = " + instance.getProcessDefinitionKey());
         System.out.println("instance.getId() = " + instance.getId());
@@ -64,7 +84,9 @@ public class FlowableRuntimeService {
         //获取runtimeservice
         TaskService taskService = processEngine.getTaskService();
         //根据流程key查询任务
-        List<Task> tasks = taskService.createTaskQuery().processDefinitionKey("holidayRequestTwo").taskAssignee("zhangsan").list();
+        IdentityService identityService = processEngine.getIdentityService();
+        identityService.setAuthenticatedUserId("lisi");
+        List<Task> tasks = taskService.createTaskQuery().processDefinitionKey("holidayRequestFour").taskAssignee("lisi").list();
         for (Task task : tasks){
             System.out.println("task.getProcessDefinitionId() = " + task.getProcessDefinitionId());
             System.out.println("task.getName() = " + task.getName());
@@ -72,6 +94,16 @@ public class FlowableRuntimeService {
             System.out.println("task.getDescription() = " + task.getDescription());
             System.out.println("task.getId() = " + task.getId());
         }
+
+  /*      List<Task> list = taskService.createTaskQuery().processDefinitionKey("holidayRequestFour").or().taskAssignee("lisi")
+                .processVariableValueEquals("INITIATOR", "lisi").endOr().list();
+        for (Task task : list){
+            System.out.println("task.getProcessDefinitionId() = " + task.getProcessDefinitionId());
+            System.out.println("task.getName() = " + task.getName());
+            System.out.println("task.getAssignee() = " + task.getAssignee());
+            System.out.println("task.getDescription() = " + task.getDescription());
+            System.out.println("task.getId() = " + task.getId());
+        }*/
     }
 
     @Test
@@ -86,6 +118,19 @@ public class FlowableRuntimeService {
         map.put("approved", false);
         //完成任务
         taskService.complete(task.getId(), map);
+    }
+
+    @Test
+    public void testCompleteTask2(){
+        //获取runtimeservice
+        IdentityService identityService = processEngine.getIdentityService();
+        identityService.setAuthenticatedUserId("lisi");
+        TaskService taskService = processEngine.getTaskService();
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("approved", false);
+        map.put("INITIATOR", "lisi");
+        //完成任务
+        taskService.complete("50011", map);
     }
 
 
