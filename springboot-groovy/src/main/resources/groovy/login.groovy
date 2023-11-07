@@ -1,7 +1,7 @@
 package com.example.demo.groovy;
+import java.lang.*;
 
 public class LoginDemo {
-
     public String loginCheck(Integer loginDays){
         if (loginDays >= 500){
             return "超过登录时间";
@@ -9,6 +9,5 @@ public class LoginDemo {
         System.out.println("loginDemo = " + loginDays);
         return "未超过登录时间";
     }
-
 
 }

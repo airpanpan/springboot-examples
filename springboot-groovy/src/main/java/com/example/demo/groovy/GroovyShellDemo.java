@@ -6,16 +6,23 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 public class GroovyShellDemo {
 
     public static void main(String[] args) {
 
-      /*  Binding binding = new Binding();
+        Binding binding = new Binding();
         binding.setProperty("name", "李四");
         binding.setProperty("age", 38);
         GroovyShell shell = new GroovyShell(binding);
         Object evaluate = shell.evaluate("name == '李四' && age == 38");
-        System.out.println(evaluate);*/
+        shell.getClassLoader().clearCache(); //清除缓存
+        System.out.println(evaluate);
 
 
 
@@ -67,7 +74,7 @@ public class GroovyShellDemo {
         System.out.println(parse.run());*/
 
 
-        while (true) {
+   /*     while (true) {
             new Thread() {
                 @Override
                 public void run() {
@@ -84,10 +91,13 @@ public class GroovyShellDemo {
                     System.out.println(test1);
                 }
             }.run();
-        }
+        }*/
 
 
-
-
+        LocalDate of = LocalDate.of(2023, 01, 01);
+        Instant instant = of.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+        long time = Date.from(instant).getTime();
+        System.out.println("time = " + time);
+        ZonedDateTime zonedDateTime = LocalDate.of(2023, 01, 01).atStartOfDay().atZone(ZoneId.systemDefault());
     }
 }

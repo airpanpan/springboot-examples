@@ -14,11 +14,14 @@ public class GroovyClassLoaderDemo {
 
     public static void main(String[] args) throws Exception {
         GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
+        //加载groovy脚本
         String file = GroovyClassLoaderDemo.class.getClassLoader().getResource("groovy/login.groovy").getFile();
-        System.out.println(file);
-        //Class c = groovyClassLoader.parseClass(new File(file));
-
-
+        Class c = groovyClassLoader.parseClass(new File(file));
+        //获取groovy方法
+        Method loginCheck = c.getDeclaredMethod("loginCheck", new Class[]{Integer.class});
+        Object invoke = loginCheck.invoke(c.newInstance(), 30);//执行
+        System.out.println(invoke);
+        groovyClassLoader.clearCache();
 
         /**
          * 方式一

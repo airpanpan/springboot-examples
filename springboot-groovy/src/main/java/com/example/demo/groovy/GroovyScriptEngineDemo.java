@@ -38,8 +38,8 @@ public class GroovyScriptEngineDemo {
         Binding binding = new Binding();
         binding.setVariable("loginDays", 30);
         String groovy = GroovyScriptEngineDemo.class.getClassLoader().getResource("groovy").getFile();
-        System.out.println("path = " + groovy);
         GroovyScriptEngine engine = new GroovyScriptEngine(groovy);
+
         //GroovyScriptEngine engine = new GroovyScriptEngine(groovy, ClassLoader.getSystemClassLoader());
         while (true) {
             Thread.sleep(3000L);
